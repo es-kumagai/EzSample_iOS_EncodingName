@@ -10,4 +10,13 @@
 
 @interface EzSampleViewController : UIViewController
 
+@property (nonatomic,readonly,weak) IBOutlet UITextField* encodingNameTextField;
+
+@property (nonatomic,readonly,weak) IBOutlet UILabel* CFStringEncodingLabel;
+@property (nonatomic,readonly,weak) IBOutlet UILabel* NSStringEncodingLabel;
+@property (nonatomic,readonly,weak) IBOutlet UILabel* encodingNameLabel;
+@property (nonatomic,readonly,weak) IBOutlet UILabel* localizedNameOfStringEncodingLabel;
+
+- (IBAction)pushConvertButton:(UIButton*)sender;
+
 @end
