@@ -17,18 +17,48 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
-}
 
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
+    self.CFStringEncodingLabel.text = nil;
+    self.NSStringEncodingLabel.text = nil;
+    self.encodingNameLabel.text = nil;
+	self.localizedNameOfStringEncodingLabel.text = nil;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
-    return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
+    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+- (void)pushConvertButton:(UIButton *)sender
+{
+    NSString* encodingName = self.encodingNameTextField.text;
+    
+    if (encodingName.length > 0)
+    {
+		// 文字列から NSStringEncoding に変換します。
+        CFStringEncoding cf_encoding = CFStringConvertIANACharSetNameToEncoding((__bridge CFStringRef)encodingName);
+		NSStringEncoding ns_encoding = CFStringConvertEncodingToNSStringEncoding(cf_encoding);
+
+		// 取得した NSStringEncoding の表示名を取得していますが、取得できない場合が多いようです。
+		NSString* ns_localizedNameOfStringEncoding = [NSString localizedNameOfStringEncoding:ns_encoding];
+		
+		// NSStringEncoding から文字列に変換し直します。（検証用）
+		NSStringEncoding re_cf_encoding = CFStringConvertNSStringEncodingToEncoding(ns_encoding);
+		NSString* re_encodingName = (__bridge NSString*)CFStringConvertEncodingToIANACharSetName(re_cf_encoding);
+		
+		// 変換結果を表示します。
+		self.CFStringEncodingLabel.text = [[NSString alloc] initWithFormat:@"%ld", (CFIndex)cf_encoding];
+		self.NSStringEncodingLabel.text = [[NSString alloc] initWithFormat:@"%lu", (UInt32)ns_encoding];
+		self.encodingNameLabel.text = re_encodingName;
+		self.localizedNameOfStringEncodingLabel.text = ns_localizedNameOfStringEncoding;
+    }
+    else
+    {
+        self.CFStringEncodingLabel.text = nil;
+        self.NSStringEncodingLabel.text = nil;
+        self.encodingNameLabel.text = nil;
+		self.localizedNameOfStringEncodingLabel.text = nil;
+    }
 }
 
 @end
